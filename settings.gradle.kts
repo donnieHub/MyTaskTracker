@@ -5,3 +5,4 @@ pluginManagement {
     }
 }
 rootProject.name = "myTaskTracker"
+include("user-service")

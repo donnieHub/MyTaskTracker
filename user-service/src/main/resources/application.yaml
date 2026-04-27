@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: user-service
+
+server:
+  port: 8081
+  error:
+    include-message: always
