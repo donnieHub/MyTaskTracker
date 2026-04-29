@@ -1,8 +1,17 @@
-spring:
-  application:
-    name: user-service
-
 server:
   port: 8081
   error:
     include-message: always
+
+spring:
+  application:
+    name: user-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:54325/userdb
+    username: user
+    password: user
+
+  jpa:
+    hibernate:
+      ddl-auto: update
