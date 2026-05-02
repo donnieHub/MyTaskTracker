@@ -16,11 +16,11 @@ class UserService(private val repo: UserRepository) {
 
     fun update(id: Long, updated: User): User {
         val user = getById(id)
-        val newUser = user.copy(
-            username = updated.username,
-            email = updated.email,
+        val newUser = user.apply {
+            username = updated.username
+            email = updated.email
             isActive = updated.isActive
-        )
+        }
         return repo.save(newUser)
     }
 

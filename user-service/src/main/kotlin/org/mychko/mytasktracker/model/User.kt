@@ -2,12 +2,11 @@ package org.mychko.mytasktracker.model
 
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
-import java.time.Instant
 import java.time.LocalDateTime
 
 @Entity
 @Table(name = "users")
-data class User(
+class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
