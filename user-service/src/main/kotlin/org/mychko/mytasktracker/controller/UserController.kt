@@ -1,12 +1,12 @@
 package org.mychko.mytasktracker.controller
 
 import org.mychko.mytasktracker.model.User
-import org.mychko.mytasktracker.repository.UserRepository
+import org.mychko.mytasktracker.service.UserService
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/users")
-class UserController(private val repo: UserRepository) {
+class UserController(private val service: UserService) {
 
     @GetMapping("/hello")
     fun hello(): String {
@@ -14,8 +14,22 @@ class UserController(private val repo: UserRepository) {
     }
 
     @PostMapping
-    fun create(@RequestBody user: User): User = repo.save(user)
+    fun create(@RequestBody user: User): User =
+        service.create(user)
 
     @GetMapping
-    fun all(): List<User> = repo.findAll()
+    fun getAll(): List<User> =
+        service.getAll()
+
+    @GetMapping("/{id}")
+    fun getById(@PathVariable id: Long): User =
+        service.getById(id)
+
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Long, @RequestBody user: User): User =
+        service.update(id, user)
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Long) =
+        service.delete(id)
 }
