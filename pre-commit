@@ -1,0 +1,15 @@
+#!/bin/bash
+echo "🔍 Running tests before commit..."
+
+# Запуск тестов
+./gradlew test --quiet
+
+# Проверка результата
+if [ $? -ne 0 ]; then
+  echo "❌ Tests failed! Commit aborted."
+  echo "Please fix the failing tests before committing."
+  exit 1
+fi
+
+echo "✅ All tests passed! Proceeding with commit."
+exit 0
