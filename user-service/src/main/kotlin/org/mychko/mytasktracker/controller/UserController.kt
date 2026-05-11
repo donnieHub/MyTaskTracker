@@ -2,6 +2,7 @@ package org.mychko.mytasktracker.controller
 
 import org.mychko.mytasktracker.model.User
 import org.mychko.mytasktracker.service.UserService
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -14,8 +15,10 @@ class UserController(private val service: UserService) {
     }
 
     @PostMapping
-    fun create(@RequestBody user: User): User =
-        service.create(user)
+    @ResponseStatus(HttpStatus.CREATED)
+    fun create(@RequestBody user: User): User {
+        return service.create(user)
+    }
 
     @GetMapping
     fun getAll(): List<User> =
@@ -30,6 +33,8 @@ class UserController(private val service: UserService) {
         service.update(id, user)
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) =
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun delete(@PathVariable id: Long) {
         service.delete(id)
+    }
 }
