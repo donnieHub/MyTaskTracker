@@ -7,14 +7,14 @@ on:
       - '**.kt'
       - '**.java'
       - '**.kts'
-      - '.github/workflows/test.yml'
+      - '.github/workflows/main.yml'
   pull_request:
     branches: [ "main", "master" ]
     paths:
       - '**.kt'
       - '**.java'
       - '**.kts'
-      - '.github/workflows/test.yml'
+      - '.github/workflows/main.yml'
 
 jobs:
   build-and-test:
