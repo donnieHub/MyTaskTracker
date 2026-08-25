@@ -8,7 +8,8 @@ spring:
     name: user-service
 
   kafka:
-    bootstrap-servers: localhost:9092
+    # Если переменная не задана, по умолчанию localhost (для запуска из IDE)
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -22,11 +23,12 @@ spring:
           spring.json.trusted.packages: "org.mychko.mytasktracker.dto,org.mychko.mytasktracker.model"
 
   datasource:
-    url: jdbc:postgresql://localhost:54325/userdb
-    username: user
-    password: user
+    # Если переменная не задана, по умолчанию localhost:54325 (для запуска из IDE)
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:54325/userdb}
+    username: ${SPRING_DATASOURCE_USERNAME:user}
+    password: ${SPRING_DATASOURCE_PASSWORD:user}
 
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}

@@ -1,6 +1,29 @@
 version: "3.9"
 
 services:
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    environment:
+      # Переопределяем настройки application.yml для среды Docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://user-db:5432/userdb
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=user
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      - microservices-network
+    depends_on:
+      user-db:
+        condition: service_healthy # Ждем, пока БД реально будет готова
+      kafka:
+        condition: service_started
+    restart: unless-stopped
+
   user-db:
     image: postgres:15
     container_name: user-db
@@ -41,6 +64,8 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+    networks:
+      - microservices-network
     restart: unless-stopped
 
   kafka-ui:
@@ -52,6 +77,8 @@ services:
       DYNAMIC_CONFIG_ENABLED: 'true'
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+    networks:
+      - microservices-network
     restart: unless-stopped
 
 networks:
