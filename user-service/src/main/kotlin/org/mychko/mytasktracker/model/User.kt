@@ -28,4 +28,8 @@ class User(
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
-)
+) {
+    override fun toString(): String {
+        return "User(id=$id, username='$username', email='$email', isActive=$isActive, createdAt=$createdAt)"
+    }
+}
