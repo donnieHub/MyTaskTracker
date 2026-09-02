@@ -41,7 +41,7 @@ jobs:
       - name: Build and Test with Gradle
         run: ./gradlew clean build
 
-      # 5. (Опционально) Публикация отчета о тестах, если они упали.
+      # 5. Публикация отчета о тестах, если они упали.
       # Помогает быстро увидеть, какой именно тест сломался, не скачивая логи.
       - name: Publish Test Report
         if: failure()
