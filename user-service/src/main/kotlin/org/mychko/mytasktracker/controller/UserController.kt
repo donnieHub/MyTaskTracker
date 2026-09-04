@@ -2,9 +2,11 @@ package org.mychko.mytasktracker.controller
 
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.Operation
+import org.mychko.mytasktracker.dto.UserPatchRequest
 import org.mychko.mytasktracker.model.User
 import org.mychko.mytasktracker.service.UserService
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @Tag(name = "Пользователи", description = "API для работы с пользователями")
@@ -39,6 +41,15 @@ class UserController(private val service: UserService) {
     @PutMapping("/{id}")
     fun update(@PathVariable id: Long, @RequestBody user: User): User =
         service.update(id, user)
+
+    @Operation(summary = "Обновить пользователя", description = "Частично обновляет данные пользователя по его ID")
+    @PatchMapping("/{id}")
+    fun patchUser(
+        @PathVariable id: Long,
+        @RequestBody patch: UserPatchRequest
+    ): ResponseEntity<User> {
+        return ResponseEntity.ok(service.patch(id, patch))
+    }
 
     @Operation(summary = "Удалить пользователя")
     @DeleteMapping("/{id}")

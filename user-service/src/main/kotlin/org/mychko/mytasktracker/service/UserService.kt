@@ -2,6 +2,7 @@ package org.mychko.mytasktracker.service
 
 import org.mychko.mytasktracker.dto.UserEvent
 import org.mychko.mytasktracker.dto.UserEventType
+import org.mychko.mytasktracker.dto.UserPatchRequest
 import org.mychko.mytasktracker.exception.UserNotFoundException
 import org.mychko.mytasktracker.kafka.UserKafkaProducer
 import org.mychko.mytasktracker.model.User
@@ -52,6 +53,23 @@ class UserService(
 
         val event = UserEvent(savedUser.id!!, UserEventType.UPDATED, savedUser)
         kafkaProducer.sendEvent(event)
+
+        return savedUser
+    }
+
+    @Transactional
+    fun patch(id: Long, patch: UserPatchRequest): User {
+        val user = getById(id)
+
+        patch.username?.let { user.username = it }
+        patch.email?.let { user.email = it }
+        patch.isActive?.let { user.isActive = it }
+
+        val savedUser = repo.save(user)
+
+        runCatching {
+            kafkaProducer.sendEvent(UserEvent(id, UserEventType.UPDATED, savedUser))
+        }.onFailure { log.warn("Failed to publish UPDATED event for user $id", it) }
 
         return savedUser
     }
