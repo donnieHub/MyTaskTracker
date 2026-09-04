@@ -1,5 +1,6 @@
 package org.mychko.mytasktracker.kafka
 
+import org.mychko.mytasktracker.config.KafkaTopics.USER_EVENTS
 import org.mychko.mytasktracker.dto.UserEvent
 import org.mychko.mytasktracker.dto.UserEventType.*
 import org.slf4j.LoggerFactory
@@ -8,9 +9,11 @@ import org.springframework.stereotype.Component
 
 @Component
 class UserKafkaConsumer {
-    private val log = LoggerFactory.getLogger(javaClass)
+    companion object {
+        private val log = LoggerFactory.getLogger(UserKafkaConsumer::class.java)
+    }
 
-    @KafkaListener(topics = ["user-events"], groupId = "user-group")
+    @KafkaListener(topics = [USER_EVENTS], groupId = "user-group")
     fun consumeEvent(event: UserEvent) {
         log.info("Получено событие из Kafka: {}", event)
 

@@ -18,7 +18,6 @@ class GlobalExceptionHandler {
         private val log = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
     }
 
-
     @ApiResponse(
         responseCode = "404",
         description = "Пользователь не найден",
