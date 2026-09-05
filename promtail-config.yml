@@ -1,0 +1,33 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: docker-containers
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+    relabel_configs:
+      # Имя контейнера -> label "container"
+      - source_labels: ['__meta_docker_container_name']
+        regex: '/(.*)'
+        target_label: 'container'
+      # Имя compose-сервиса -> label "service" (например user-service, kafka, user-db)
+      - source_labels: ['__meta_docker_container_label_com_docker_compose_service']
+        target_label: 'service'
+      # Имя compose-проекта -> label "project"
+      - source_labels: ['__meta_docker_container_label_com_docker_compose_project']
+        target_label: 'project'
+      # Оставляем только логи вашего проекта (по желанию, можно убрать этот блок)
+      - source_labels: ['__meta_docker_container_label_com_docker_compose_project']
+        target_label: '__tmp_project'
+
+    pipeline_stages:
+      # Docker-логи приходят как JSON {"log":"...", "stream":"...", "time":"..."}
+      - docker: {}

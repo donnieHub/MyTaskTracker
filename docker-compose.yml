@@ -15,6 +15,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=user
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - LOKI_URL=http://loki:3100/loki/api/v1/push
     networks:
       - microservices-network
     depends_on:
@@ -23,6 +24,11 @@ services:
       kafka:
         condition: service_started
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   user-db:
     image: postgres:15
@@ -81,9 +87,55 @@ services:
       - microservices-network
     restart: unless-stopped
 
+  loki:
+    image: grafana/loki:3.3.2
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yml:/etc/loki/local-config.yaml:ro
+      - loki-data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+  promtail:
+    image: grafana/promtail:3.3.2
+    container_name: promtail
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    container_name: grafana
+    ports:
+      - "8082:3000"
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - loki
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
 networks:
   microservices-network:
     driver: bridge
 
 volumes:
   user-db-data:
+  loki-data:
+  grafana-data:
