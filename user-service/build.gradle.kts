@@ -8,7 +8,7 @@ plugins {
 
 group = "org.mychko"
 version = "0.0.1-SNAPSHOT"
-description = "myTaskTracker"
+description = "user-service"
 
 java {
     toolchain {
