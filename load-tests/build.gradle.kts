@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.1.0"
+    kotlin("jvm")
     id("io.gatling.gradle") version "3.15.1"
 }
 
