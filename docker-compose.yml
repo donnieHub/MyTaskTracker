@@ -50,6 +50,55 @@ services:
       retries: 5
     restart: unless-stopped
 
+  task-service:
+    build:
+      context: .
+      dockerfile: task-service/Dockerfile
+    container_name: task-service
+    ports:
+      - "8082:8082"
+    environment:
+      # Переопределяем настройки application.yml для среды Docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://task-db:5432/taskdb
+      - SPRING_DATASOURCE_USERNAME=task
+      - SPRING_DATASOURCE_PASSWORD=task
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - LOKI_URL=http://loki:3100/loki/api/v1/push
+    networks:
+      - microservices-network
+    depends_on:
+      task-db:
+        condition: service_healthy # Ждем, пока БД реально будет готова
+      kafka:
+        condition: service_started
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  task-db:
+    image: postgres:15
+    container_name: task-db
+    environment:
+      POSTGRES_DB: taskdb
+      POSTGRES_USER: task
+      POSTGRES_PASSWORD: task
+    ports:
+      - "54326:5432"
+    volumes:
+      - task-db-data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U task -d taskdb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   kafka:
     image: apache/kafka:latest
     container_name: kafka
@@ -118,7 +167,7 @@ services:
     image: grafana/grafana:11.4.0
     container_name: grafana
     ports:
-      - "8082:3000"
+      - "3000:3000"
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
@@ -137,5 +186,6 @@ networks:
 
 volumes:
   user-db-data:
+  task-db-data:
   loki-data:
   grafana-data:

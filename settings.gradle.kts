@@ -8,4 +8,5 @@ pluginManagement {
 
 rootProject.name = "myTaskTracker"
 include("user-service")
+include("task-service")
 include("load-tests")

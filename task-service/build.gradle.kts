@@ -1,0 +1,57 @@
+plugins {
+    kotlin("jvm")
+    kotlin("plugin.spring")
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
+    kotlin("plugin.jpa")
+}
+
+group = "org.mychko"
+version = "0.0.1-SNAPSHOT"
+description = "task-service"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    gradlePluginPortal()
+    mavenCentral()
+    maven { url = uri("https://repo.spring.io/snapshot") }
+}
+
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.apache.commons:commons-lang3:3.18.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16")
+    implementation("com.github.loki4j:loki-logback-appender:2.0.3")
+    runtimeOnly("org.postgresql:postgresql")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testImplementation("com.ninja-squad:springmockk:5.0.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict")
+    }
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
