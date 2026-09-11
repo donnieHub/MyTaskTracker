@@ -8,18 +8,14 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class SwaggerConfig {
 
-    @Configuration
-    class SwaggerConfig {
-
-        @Bean
-        fun customOpenAPI(): OpenAPI {
-            return OpenAPI()
-                .info(
-                    Info()
-                        .title("My Task Tracker API")
-                        .version("1.0.0")
-                        .description("REST API для трекера задач")
-                )
-        }
+    @Bean
+    fun customOpenAPI(): OpenAPI {
+        return OpenAPI()
+            .info(
+                Info()
+                    .title("User Service API")
+                    .version("1.0.0")
+                    .description("REST API микросервиса управления пользователями")
+            )
     }
 }
