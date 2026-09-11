@@ -1,5 +1,5 @@
 # MyTaskTracker
-MyTaskTracker is a microservices-based task tracking application built with Kotlin and Spring Boot.
+MyTaskTracker is a microservices-based task tracking application built with Kotlin, Spring Boot and Kafka.
 
 
 ## Настройка после клонирования
