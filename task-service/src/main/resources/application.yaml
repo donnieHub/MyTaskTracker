@@ -31,4 +31,11 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:validate}
+
+  flyway:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:54326/taskdb}
+    user: ${SPRING_DATASOURCE_USERNAME:task}
+    password: ${SPRING_DATASOURCE_PASSWORD:task}
+    baseline-on-migrate: true
+    baseline-version: 1

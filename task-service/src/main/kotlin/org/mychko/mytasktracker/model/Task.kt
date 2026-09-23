@@ -14,8 +14,8 @@ class Task(
     @Column(nullable = false, length = 200)
     var title: String,
 
-    @Column(length = 1000)
-    var description: String? = null,
+    @Column(nullable = false, length = 10000)
+    var description: String = "",
 
     @Column(nullable = false)
     var userId: Long, // просто внешний ID, без связи через FK на другую БД
