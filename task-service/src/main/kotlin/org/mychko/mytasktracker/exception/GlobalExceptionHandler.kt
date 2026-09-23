@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -39,5 +40,31 @@ class GlobalExceptionHandler {
             timestamp = Instant.now()
         )
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body)
+    }
+
+    @ApiResponse(
+        responseCode = "400",
+        description = "Ошибка валидации запроса",
+        content = [Content(
+            schema = Schema(
+                implementation = ErrorResponse::class
+            )
+        )]
+    )
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidation(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
+        val details = ex.bindingResult.fieldErrors
+            .joinToString("; ") { "${it.field}: ${it.defaultMessage}" }
+
+        log.warn("Validation failed: {}", details)
+
+        val body = ErrorResponse(
+            status = HttpStatus.BAD_REQUEST.value(),
+            error = HttpStatus.BAD_REQUEST.reasonPhrase,
+            message = details,
+            timestamp = Instant.now()
+        )
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
     }
 }

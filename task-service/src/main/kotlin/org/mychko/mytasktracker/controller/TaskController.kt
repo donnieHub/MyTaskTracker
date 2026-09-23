@@ -2,6 +2,7 @@ package org.mychko.mytasktracker.controller
 
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.Operation
+import jakarta.validation.Valid
 import org.mychko.mytasktracker.dto.CreateTaskRequest
 import org.mychko.mytasktracker.dto.TaskPatchRequest
 import org.mychko.mytasktracker.dto.TaskResponse
@@ -20,7 +21,7 @@ class TaskController(
     @Operation(summary = "Создать задачу", description = "Пользователь создает новую задачу")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody task: CreateTaskRequest): TaskResponse {
+    fun create(@Valid @RequestBody task: CreateTaskRequest): TaskResponse {
         return service.create(task).toResponse()
     }
 

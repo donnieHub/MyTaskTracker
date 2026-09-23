@@ -21,10 +21,12 @@ class TasksService(
 
     @Transactional
     fun create(request: CreateTaskRequest): Task {
+        val userId = requireNotNull(request.userId) { "userId is required" }
+
         val task = Task(
             title = request.title,
-            description = request.description,
-            userId = request.userId
+            description = request.description ?: "",
+            userId = userId
         )
 
         return repo.save(task)
