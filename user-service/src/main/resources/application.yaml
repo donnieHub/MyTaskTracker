@@ -32,3 +32,10 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+
+  flyway:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:54326/userdb}
+    user: ${SPRING_DATASOURCE_USERNAME:user}
+    password: ${SPRING_DATASOURCE_PASSWORD:user}
+    baseline-on-migrate: true
+    baseline-version: 1
